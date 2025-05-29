@@ -1,0 +1,90 @@
+<div class="container">
+
+  <main>
+    <section class="form-section">
+      <h2>{{ editando ? 'Editar Idea de Negocio' : 'Registrar Nueva Idea' }}</h2>
+      <form (ngSubmit)="guardarIdea()">
+        <div class="form-group">
+          <label for="titulo">Título:</label>
+          <input type="text" id="titulo" name="titulo" [(ngModel)]="ideaActual.titulo" required>
+        </div>
+
+        <div class="form-group">
+          <label for="descripcion">Descripción Detallada:</label>
+          <textarea id="descripcion" name="descripcion" [(ngModel)]="ideaActual.descripcion" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="categoria">Categoría:</label>
+          <select id="categoria" name="categoria" [(ngModel)]="ideaActual.categoria" required>
+            <option value="" disabled>Seleccione una categoría</option>
+            <option *ngFor="let cat of categoriasDisponibles" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="estado">Estado:</label>
+          <select id="estado" name="estado" [(ngModel)]="ideaActual.estado" required>
+            <option *ngFor="let est of estadosDisponibles" [value]="est">{{ est }}</option>
+          </select>
+        </div>
+
+        <hr>
+        <h3>Campos Opcionales</h3>
+        <div class="optional-fields">
+            <div *ngFor="let campo of ideaActual.camposOpcionales; let i = index" class="optional-field-item">
+                <span><strong>{{ campo.nombre }}:</strong> {{ campo.valor }}</span>
+            </div>
+        </div>
+
+        <div class="add-optional-field">
+          <div class="form-group">
+            <label for="nombreCampoOpcional">Nombre del Campo:</label>
+            <input type="text" id="nombreCampoOpcional" name="nombreCampoOpcional" [(ngModel)]="nuevoCampoOpcional.nombre">
+          </div>
+          <div class="form-group">
+            <label for="valorCampoOpcional">Valor del Campo:</label>
+            <input type="text" id="valorCampoOpcional" name="valorCampoOpcional" [(ngModel)]="nuevoCampoOpcional.valor">
+          </div>
+          <button type="button" class="btn-add-optional" (click)="agregarCampoOpcional()">+ Añadir Campo Opcional</button>
+        </div>
+        <hr>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">{{ editando ? 'Actualizar Idea' : 'Guardar Idea' }}</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()" *ngIf="editando">Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="list-section">
+      <h2> Mis Ideas de Negocio</h2>
+      <div *ngIf="ideas.length === 0" class="no-ideas">
+        <p>Aún no se han registrado ideas</p>
+      </div>
+      <div class="idea-list" *ngIf="ideas.length > 0">
+        <div *ngFor="let idea of ideas" class="idea-card">
+          <div class="idea-header">
+            <h3>{{ idea.titulo }}</h3>
+            <span class="status" [ngClass]="idea.estado.toLowerCase()">{{ idea.estado }}</span>
+          </div>
+          <p class="category"><strong>Categoría:</strong> {{ idea.categoria }}</p>
+          <p>{{ idea.descripcion }}</p>
+          <div *ngIf="idea.camposOpcionales && idea.camposOpcionales.length > 0" class="optional-fields-display">
+            <h4>Campos Adicionales:</h4>
+            <ul>
+              <li *ngFor="let campo of idea.camposOpcionales">
+                <strong>{{ campo.nombre }}:</strong> {{ campo.valor }}
+              </li>
+            </ul>
+          </div>
+          <div class="idea-actions">
+            <button class="btn btn-edit" (click)="editarIdea(idea)"> Editar</button>
+            <button class="btn btn-delete" (click)="eliminarIdea(idea.id)"> Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</div>
